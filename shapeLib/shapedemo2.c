@@ -1,4 +1,5 @@
 #include <libTimer.h>
+#include <abCircle.h>
 #include "lcdutils.h"
 #include "lcddraw.h"
 #include "shape.h"
@@ -10,13 +11,14 @@ AbRArrow arrow30 = {abRArrowGetBounds, abRArrowCheck, 30};
 Region fence = {{10,30}, {SHORT_EDGE_PIXELS-10, LONG_EDGE_PIXELS-10}};
 
 
-Layer layer2 = {
-  (AbShape *)&arrow30,
-  {screenWidth/2+40, screenHeight/2+10}, 	    /* position */
+Layer layer2 = {		/**< Layer with an orange circle */
+  (AbShape *)&circle8,
+  {(screenWidth/2)+10, (screenHeight/2)+5}, /**< bit below & right of center */
   {0,0}, {0,0},				    /* last & next pos */
-  COLOR_BLACK,
-  0,
+  COLOR_VIOLET,
+  0
 };
+
 Layer layer1 = {
   (AbShape *)&rect10,
   {screenWidth/2, screenHeight/2}, 	    /* position */
@@ -33,7 +35,7 @@ Layer layer0 = {
 };
 
 
-u_int bgColor = COLOR_BLUE;
+u_int bgColor = COLOR_BLACK;
 
 int
 main()
@@ -43,10 +45,12 @@ main()
   shapeInit();
   Vec2 rectPos = screenCenter, circlePos = {30,screenHeight - 30};
 
-  clearScreen(COLOR_BLUE);
+  clearScreen(COLOR_BLACK);
   drawString5x7(20,20, "hello", COLOR_GREEN, COLOR_RED);
   shapeInit();
   
+  shapeInit();
+
   layerInit(&layer0);
   layerDraw(&layer0);
   

@@ -1,4 +1,5 @@
-/** \file lcddraw.c
+/** \file lcddrafg
+w.c
  *  \brief Adapted from RobG's EduKit
  */
 #include "lcdutils.h"
@@ -72,6 +73,30 @@ void drawChar5x7(u_char rcol, u_char rrow, char c,
   }
 }
 
+void drawChar(u_char rcol, u_char rrow, int point, 
+     u_int fgColorBGR, u_int bgColorBGR) 
+{
+    char c = point+'0';
+  u_char col = 0;
+  u_char row = 0;
+  u_char bit = 0x01;
+  u_char oc = c - 0x20;
+
+  lcd_setArea(rcol, rrow, rcol + 4, rrow + 7); /* relative to requested col/row */
+  while (row < 8) {
+    while (col < 5) {
+      u_int colorBGR = (font_5x7[oc][col] & bit) ? fgColorBGR : bgColorBGR;
+      lcd_writeColor(colorBGR);
+      col++;
+    }
+    col = 0;
+    bit <<= 1;
+    row++;
+  }
+}
+
+
+
 /** Draw string at col,row
  *  Type:
  *  FONT_SM - small (5x8,) FONT_MD - medium (8x12,) FONT_LG - large (11x16)
@@ -93,6 +118,18 @@ void drawString5x7(u_char col, u_char row, char *string,
     cols += 6;
   }
 }
+
+void score_Point(u_char col, u_char row, int point,
+		u_int fgColorBGR, u_int bgColorBGR)
+{
+  u_char cols = col;
+  //while (*string) {
+    char a = '1';
+    drawChar5x7(cols, row, a, fgColorBGR, bgColorBGR);
+    cols += 6;
+  //}
+}
+
 
 
 /** Draw rectangle outline
