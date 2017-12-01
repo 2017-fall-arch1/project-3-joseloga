@@ -14,15 +14,18 @@
 #include <shape.h>
 #include <abCircle.h>
 #include "buzzer.h"
+#include "Assembly.h"
 #define GREEN_LED BIT6
-static short p1 =0;
-static short p2 =0;
-static short temp=0;
+ short p1 =0;
+ short p2 =0;
 
-static int button; /* 0 when SW1 is up */
-static int button2;
-static int button3;
-static int button4;
+ short p1Score=0;
+ short p2Score=0;
+
+ int button; /* 0 when SW1 is up */
+ int button2;
+ int button3;
+ int button4;
    
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {2,15}}; /**< 10x10 rectangle */
@@ -197,8 +200,8 @@ void mlAdvanceball(MovLayer *ml, Region *fence, MovLayer *Lpad,MovLayer *Rpad)
 	  (shapeBoundary.botRight.axes[axis] > fence->botRight.axes[axis]-3    ) ) {
 	
           int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-	newPos.axes[axis] += (3*velocity);
-          
+	newPos.axes[axis] += (3*velocity) ;
+         
     }
      
       // left pad                       0,1
@@ -206,12 +209,12 @@ void mlAdvanceball(MovLayer *ml, Region *fence, MovLayer *Lpad,MovLayer *Rpad)
            && (shapeBoundary.botRight.axes[1]-5 < Leftpad.botRight.axes[1])  
             &&  (shapeBoundary.topLeft.axes[1]+9 > Leftpad.topLeft.axes[1])) {
 	
-          int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-	newPos.axes[axis] += (3*velocity);
-        
+           int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
+ 	newPos.axes[axis] += (3*velocity);
+         
       ml->layer->color= COLOR_RED;
                      
-//         drawString5x7(50,120, "GOAL!", COLOR_GREEN, COLOR_GREEN);
+         drawString5x7(50,120, "GOAL!", COLOR_BLACK, COLOR_BLACK);
          buzzer_set_period(2000);
         __delay_cycles(160000);
     break;
@@ -240,8 +243,10 @@ void mlAdvanceball(MovLayer *ml, Region *fence, MovLayer *Lpad,MovLayer *Rpad)
     
       
       if ((shapeBoundary.topLeft.axes[0] < fence->topLeft.axes[0]+3) ) {
-	    p2++; 
-        
+	   // p2++; 
+       
+         // scorepoint(0,1);
+          // score_point(0,1);
        buzzer_set_period(6000);
         __delay_cycles(160000);
         drawString5x7(50,120, "GOAL!", COLOR_BLUE, COLOR_BLACK);
@@ -250,12 +255,15 @@ void mlAdvanceball(MovLayer *ml, Region *fence, MovLayer *Lpad,MovLayer *Rpad)
     }
     
       if ((shapeBoundary.botRight.axes[0] > fence->botRight.axes[0]-3) ) {
-	    p1++;
+	    //p1++;
         
+        //  scorepoint(1,0);
+          //score_point(1,0);
         buzzer_set_period(6000);
         __delay_cycles(160000);
         drawString5x7(50,120, "GOAL!", COLOR_RED, COLOR_BLACK);
        
+        
       
      break;
           
@@ -307,39 +315,57 @@ Region fieldFence;		/**< fence around playing field  */
  */
 
 
-void score_board(){
-    if(p1 == 10) {
+void score_board(short player){
+    if(player ==0) {
         p1=0;
            
     drawString5x7(45,25, "PLAYER1", COLOR_RED, COLOR_BLACK);
     drawString5x7(45,35, "  WIN", COLOR_WHITE, COLOR_BLACK);
     buzzer_set_period(0);
-    __delay_cycles(16000000);
+    __delay_cycles(32000000);
     
     WDTCTL=0;
         
         
     } 
-    if(p2 == 10) {
+    if(player ==1) {
         p2=0;
         
     drawString5x7(45,25, "PLAYER2", COLOR_BLUE, COLOR_BLACK);
     drawString5x7(45,35, "  WIN", COLOR_WHITE, COLOR_BLACK);
-    __delay_cycles(16000000);
-     WDTCTL=0;
+    buzzer_set_period(0);
+    
+    __delay_cycles(32000000);
+    
+    WDTCTL=0;
         
         
     } 
        
-    drawString5x7(50,2, "SCORE", COLOR_WHITE, COLOR_BLACK);
+    drawString5x7(52,2, "PONG", COLOR_WHITE, COLOR_BLACK);
      drawString5x7(25,2, "P1", COLOR_RED, COLOR_BLACK);
       drawString5x7(90,2, "P2", COLOR_BLUE, COLOR_BLACK);
     
     drawChar(ml3.layer->pos.axes[0]-2,ml3.layer->pos.axes[1]-2, p2, COLOR_WHITE, COLOR_BLUE);
     drawChar(ml1.layer->pos.axes[0]-2, ml1.layer->pos.axes[1]-2,p1, COLOR_WHITE, COLOR_RED);
 }
-
-
+/*
+void score_point(short p1Score, short p2Score){
+    //  drawString5x7(90,2, "P2", COLOR_WHITE, COLOR_BLACK);
+    
+    if (p1Score == 1){
+        if(p1==9){
+           score_board(0); 
+        }
+     p1++;
+    }
+    if (p2Score==1){
+        if(p2==9){
+        score_board(1);
+        }
+        p2++;
+    }
+}*/
 
 void main()
 {
@@ -382,24 +408,24 @@ void main()
     
   if(button){
        movLayerDraw(&ml1, &layer1);
-        score_board();
+        score_board(2);
        mlAdvance2(&ml1, &fieldFence);
   }
    if(button2){
        movLayerDraw(&ml2, &layer1);
-        score_board();
+        score_board(2);
        mlAdvance2(&ml2, &fieldFence);
     
        
 }
    if(button3){
        movLayerDraw(&ml3, &layer3);
-        score_board();
+        score_board(2);
        mlAdvance2(&ml3, &fieldFence);
   }
    if(button4){
        movLayerDraw(&ml4, &layer3);
-        score_board();
+        score_board(2);
        mlAdvance2(&ml4, &fieldFence);
   }
     if(button2 && button3 ){
@@ -422,7 +448,7 @@ void wdt_c_handler()
   if (count == 5) {
     mlAdvanceball(&ml0, &fieldFence,&ml1,&ml3);
    
-    score_board();
+    score_board(2);
     buzzer_set_period(0); // turn off 
         redrawScreen = 1;
      
