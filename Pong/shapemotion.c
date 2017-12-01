@@ -311,15 +311,24 @@ void score_board(){
     if(p1 == 10) {
         p1=0;
            
-    drawString5x7(50,60, "PLAYER1", COLOR_BLACK, COLOR_GREEN);
-    drawString5x7(50,70, "  WIN", COLOR_BLACK, COLOR_GREEN);
+    drawString5x7(45,25, "PLAYER1", COLOR_RED, COLOR_BLACK);
+    drawString5x7(45,35, "  WIN", COLOR_WHITE, COLOR_BLACK);
+    buzzer_set_period(0);
     __delay_cycles(16000000);
-     WDTCTL=0;
+    
+    WDTCTL=0;
         
         
     } 
     if(p2 == 10) {
         p2=0;
+        
+    drawString5x7(45,25, "PLAYER2", COLOR_BLUE, COLOR_BLACK);
+    drawString5x7(45,35, "  WIN", COLOR_WHITE, COLOR_BLACK);
+    __delay_cycles(16000000);
+     WDTCTL=0;
+        
+        
     } 
        
     drawString5x7(50,2, "SCORE", COLOR_WHITE, COLOR_BLACK);
