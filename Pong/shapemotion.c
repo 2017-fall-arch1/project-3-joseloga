@@ -16,21 +16,15 @@
 #include "buzzer.h"
 #include "Assembly.h"
 #define GREEN_LED BIT6
- short p1 =0;
- short p2 =0;
 
- short p1Score=0;
- short p2Score=0;
+short p1 =0, p2 =0;
+short p1Score=0, p2Score=0;
 
- int button; /* 0 when SW1 is up */
- int button2;
- int button3;
- int button4;
+ int button,button2,button3,button4;
    
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {2,15}}; /**< 10x10 rectangle */
 AbRect line = {abRectGetBounds, abRectCheck, {0,30}}; /**< 10x10 rectangle */
-
 AbRArrow rightArrow = {abRArrowGetBounds, abRArrowCheck, 30};
 
 AbRectOutline fieldOutline = {	/* playing field */
@@ -76,24 +70,6 @@ Layer layer1 = {		/**< Layer with the left Paddle */
   &fieldLayer,
 };
 
-Layer layer11 = {		/**< Layer with the left Paddle */
-  (AbShape *)&rect10,
-  {((screenWidth/8)-10), 15}, /**< center */
-  {0,0}, {0,0},				    /* last & next pos */
-  COLOR_RED,
-  &fieldLayer,
-};
-
-
-
-Layer layer00 = {		/**< Layer with an ball */
-  (AbShape *)&circle3,
-  {(screenWidth/2), (screenHeight/2)}, /**< bit below & right of center */
-  {0,0}, {0,0},				    /* last & next pos */
-  COLOR_WHITE,
-  &layer1,
-};
-
 
 Layer layer0 = {		/**< Layer with an ball */
   (AbShape *)&circle3,
@@ -120,11 +96,8 @@ typedef struct MovLayer_s {
 /* initial value of {0,0} will be overwritten */
 MovLayer ml3 = { &layer3, {0,3}, 0 };   //left button downward p2
 MovLayer ml4 = { &layer3, {0,-3}, 0 };  //right button upward p2
-
-MovLayer ml11 = { &layer11, {0,3}, 0 };  // left button downard p1
 MovLayer ml2 = { &layer1, {0,-3}, 0 };  // right button upward p1
 MovLayer ml1 = { &layer1, {0,2}, 0 };  // left button downard p1
-MovLayer ml00 = { &layer0, {2,2}, 0};   // ball 
 
 MovLayer ml0 = { &layer0, {2,2}, 0};   // ball 
 
@@ -199,83 +172,72 @@ void mlAdvanceball(MovLayer *ml, Region *fence, MovLayer *Lpad,MovLayer *Rpad)
       if ((shapeBoundary.topLeft.axes[axis] < fence->topLeft.axes[axis]+3) ||
 	  (shapeBoundary.botRight.axes[axis] > fence->botRight.axes[axis]-3    ) ) {
 	
-          int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-	newPos.axes[axis] += (3*velocity) ;
+        int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
+        newPos.axes[axis] += (3*velocity) ;
          
-    }
+       }
      
-      // left pad                       0,1
+      // left pad
        if ((shapeBoundary.topLeft.axes[0] < Leftpad.botRight.axes[0]+1) 
            && (shapeBoundary.botRight.axes[1]-5 < Leftpad.botRight.axes[1])  
             &&  (shapeBoundary.topLeft.axes[1]+9 > Leftpad.topLeft.axes[1])) {
 	
            int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
- 	newPos.axes[axis] += (3*velocity);
-         
-      ml->layer->color= COLOR_RED;
+           newPos.axes[axis] += (3*velocity);
+            
+            ml->layer->color= COLOR_RED;
                      
          drawString5x7(50,120, "GOAL!", COLOR_BLACK, COLOR_BLACK);
          buzzer_set_period(2000);
         __delay_cycles(160000);
-    break;
+        break;
        
-            }
+       }
+            
       // right pad 
       
-         if ((shapeBoundary.botRight.axes[0] > Rightpad.topLeft.axes[0])
-           && (shapeBoundary.botRight.axes[1]-5 < Rightpad.botRight.axes[1])  
-            &&  (shapeBoundary.topLeft.axes[1]+8 > Rightpad.topLeft.axes[1])) {
+      if ((shapeBoundary.botRight.axes[0] > Rightpad.topLeft.axes[0])
+          && (shapeBoundary.botRight.axes[1]-5 < Rightpad.botRight.axes[1])  
+           &&  (shapeBoundary.topLeft.axes[1]+8 > Rightpad.topLeft.axes[1])) {
 	
-                int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-                newPos.axes[axis] += (3*velocity);
+            int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
+            newPos.axes[axis] += (3*velocity);
         
-              ml->layer->color= COLOR_BLUE;
-                 
-         drawString5x7(50,120, "GOAL!", COLOR_BLACK, COLOR_BLACK);
+            ml->layer->color= COLOR_BLUE;
+            drawString5x7(50,120, "GOAL!", COLOR_BLACK, COLOR_BLACK);
 
-         buzzer_set_period(2000);
-        __delay_cycles(160000);
-        
-        
-             break;
+            buzzer_set_period(2000);
+            __delay_cycles(160000);
+        break;
        
-            }
+        }
     
       
       if ((shapeBoundary.topLeft.axes[0] < fence->topLeft.axes[0]+3) ) {
-	   // p2++; 
-       
-         // scorepoint(0,1);
-          // score_point(0,1);
-       buzzer_set_period(6000);
-        __delay_cycles(160000);
-        drawString5x7(50,120, "GOAL!", COLOR_BLUE, COLOR_BLACK);
+	   
+          scorepoint(0,1);
+          buzzer_set_period(6000);
+          __delay_cycles(160000);
+          drawString5x7(50,120, "GOAL!", COLOR_BLUE, COLOR_BLACK);
    
         break;
-    }
+      }
     
       if ((shapeBoundary.botRight.axes[0] > fence->botRight.axes[0]-3) ) {
 	    //p1++;
         
-        //  scorepoint(1,0);
+         scorepoint(1,0);
           //score_point(1,0);
         buzzer_set_period(6000);
         __delay_cycles(160000);
         drawString5x7(50,120, "GOAL!", COLOR_RED, COLOR_BLACK);
-       
-        
-      
-     break;
+      break;
           
-    }
-       
-       
-        
-    } 
+     }
+   } 
  
      ml->layer->posNext = newPos;
-    // Lpad->layer->posNext = newPosPad;
-     
+    
   } /**< for ml */
 }
 
@@ -450,7 +412,7 @@ void wdt_c_handler()
    
     score_board(2);
     buzzer_set_period(0); // turn off 
-        redrawScreen = 1;
+    redrawScreen = 1;
      
     count = 0;
   } 
