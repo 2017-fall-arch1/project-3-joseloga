@@ -19,8 +19,7 @@
 
 short p1 =0, p2 =0;
 short p1Score=0, p2Score=0;
-
- int button,button2,button3,button4;
+int button,button2,button3,button4;
    
 
 AbRect rect10 = {abRectGetBounds, abRectCheck, {2,15}}; /**< 10x10 rectangle */
@@ -227,7 +226,6 @@ void mlAdvanceball(MovLayer *ml, Region *fence, MovLayer *Lpad,MovLayer *Rpad)
 	    //p1++;
         
          scorepoint(1,0);
-          //score_point(1,0);
         buzzer_set_period(6000);
         __delay_cycles(160000);
         drawString5x7(50,120, "GOAL!", COLOR_RED, COLOR_BLACK);
@@ -240,6 +238,7 @@ void mlAdvanceball(MovLayer *ml, Region *fence, MovLayer *Lpad,MovLayer *Rpad)
     
   } /**< for ml */
 }
+
 
 
 
@@ -281,23 +280,28 @@ void score_board(short player){
     if(player ==0) {
         p1=0;
            
+        
     drawString5x7(45,25, "PLAYER1", COLOR_RED, COLOR_BLACK);
     drawString5x7(45,35, "  WIN", COLOR_WHITE, COLOR_BLACK);
+    drawString5x7(50,120, "GOAL!", COLOR_BLACK, COLOR_BLACK);
+
+    song();
     buzzer_set_period(0);
-    __delay_cycles(32000000);
     
     WDTCTL=0;
         
         
     } 
     if(player ==1) {
-        p2=0;
+        p2=0;   
         
     drawString5x7(45,25, "PLAYER2", COLOR_BLUE, COLOR_BLACK);
     drawString5x7(45,35, "  WIN", COLOR_WHITE, COLOR_BLACK);
+    drawString5x7(50,120, "GOAL!", COLOR_BLACK, COLOR_BLACK);
+
     buzzer_set_period(0);
-    
-    __delay_cycles(32000000);
+    song();
+    buzzer_set_period(0);
     
     WDTCTL=0;
         
@@ -311,23 +315,6 @@ void score_board(short player){
     drawChar(ml3.layer->pos.axes[0]-2,ml3.layer->pos.axes[1]-2, p2, COLOR_WHITE, COLOR_BLUE);
     drawChar(ml1.layer->pos.axes[0]-2, ml1.layer->pos.axes[1]-2,p1, COLOR_WHITE, COLOR_RED);
 }
-/*
-void score_point(short p1Score, short p2Score){
-    //  drawString5x7(90,2, "P2", COLOR_WHITE, COLOR_BLACK);
-    
-    if (p1Score == 1){
-        if(p1==9){
-           score_board(0); 
-        }
-     p1++;
-    }
-    if (p2Score==1){
-        if(p2==9){
-        score_board(1);
-        }
-        p2++;
-    }
-}*/
 
 void main()
 {

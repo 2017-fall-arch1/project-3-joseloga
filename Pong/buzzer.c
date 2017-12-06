@@ -1,6 +1,7 @@
 #include <msp430.h>
 #include "libTimer.h"
 #include "buzzer.h"
+#include "Assembly.h"
 
 static unsigned int period = 100;
 static signed int rate = 200;	
@@ -30,10 +31,17 @@ void buzzer_set_period(short cycles)
 {
   CCR0 = cycles; 
   CCR1 = cycles >> 1;		/* one half cycle */
+ 
 }
 
-   
-   
-//    buzzer_set_period(0); // turn off 
+void delay(){
+  __delay_cycles(8000000);
     
+    
+}
 
+void delayShort(){
+  __delay_cycles(4500000);
+    
+    
+}
