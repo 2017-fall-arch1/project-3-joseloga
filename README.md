@@ -17,13 +17,14 @@ To move the pads for player 1 (BLUE)
 To play first use 
 
 ~~~
-$ make in the first folder
+$ make 
 ~~~
 
-Then go to the pong folder and use 
+in the first folder, then go to the pong folder and use 
 
 ~~~
 $ make load
 ~~~
-To install the game in the MSP430.
+
+When its complete you can now play the game. 
 
