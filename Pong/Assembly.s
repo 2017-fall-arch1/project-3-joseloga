@@ -80,8 +80,8 @@ beat4:                          ;this label its note with a tempo
         .global song
 
     pop 0
-song:                           ;this method play the notes in a way to create a song
-    call #beat
+song:                           ;this method play the notes in a way to create a song for the winner
+    call #beat                      
     call #beat2
     call #beat3
     call #beat2
